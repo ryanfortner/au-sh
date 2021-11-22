@@ -42,6 +42,22 @@ curl -s https://api.github.com/repos/VSCodium/VSCodium/releases/latest \
 
 rm $PKGDIR/codium-* || rm $PKGDIR/codium_*
 
+echo "Updating Goreleaser"
+LATEST=`curl -s https://api.github.com/repos/goreleaser/goreleaser/releases/latest | grep -oP '"tag_name": "\K(.*)(?=")'`
+curl -s https://api.github.com/repos/goreleaser/goreleaser/releases/latest \
+  | grep browser_download_url \
+  | grep 'armv6.deb"' \
+  | cut -d '"' -f 4 \
+  | xargs -n 1 curl -L -o goreleaser-$LATEST-armhf.deb || error "Failed to download goreleaser:armhf"
+
+curl -s https://api.github.com/repos/goreleaser/goreleaser/releases/latest \
+  | grep browser_download_url \
+  | grep 'arm64.deb"' \
+  | cut -d '"' -f 4 \
+  | xargs -n 1 curl -L -o goreleaser-$LATEST-arm64.deb || error "Failed to download goreleaser:arm64"
+
+rm $PKGDIR/goreleaser-* || rm $PKGDIR/goreleaser_*
+
 mv *.deb $PKGDIR
 
 cd $PKGDIRA
