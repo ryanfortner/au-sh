@@ -104,6 +104,24 @@ rm $PKGDIR/pacstall-* || rm $PKGDIR/pacstall_*
 
 mv pacstall* $PKGDIR
 
+echo "Updating croc"
+LATEST=`curl -s https://api.github.com/repos/schollz/croc/releases/latest | grep -oP '"tag_name": "\K(.*)(?=")'`
+curl -s https://api.github.com/repos/schollz/croc/releases/latest \
+  | grep browser_download_url \
+  | grep 'ARM.deb"' \
+  | cut -d '"' -f 4 \
+  | xargs -n 1 curl -L -o croc-$LATEST-armhf.deb || error "Failed to download croc:armhf"
+
+curl -s https://api.github.com/repos/schollz/croc/releases/latest \
+  | grep browser_download_url \
+  | grep 'ARM64.deb"' \
+  | cut -d '"' -f 4 \
+  | xargs -n 1 curl -L -o croc-$LATEST-arm64.deb || error "Failed to download croc:arm64"
+
+rm $PKGDIR/croc-* || rm $PKGDIR/croc_*
+
+mv croc* $PKGDIR
+
 cd $PKGDIRA
 echo "writing packages..."
 EMAIL="$(cat /root/email)"
