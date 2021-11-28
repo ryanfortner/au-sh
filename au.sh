@@ -92,7 +92,7 @@ rm $PKGDIR/howdy-* || rm $PKGDIR/howdy_*
 
 mv howdy* $PKGDIR
 
-echo "Updating pactsall"
+echo "Updating pacstall"
 LATEST=`curl -s https://api.github.com/repos/pacstall/pacstall/releases/latest | grep -oP '"tag_name": "\K(.*)(?=")'`
 curl -s https://api.github.com/repos/pacstall/pacstall/releases/latest \
   | grep browser_download_url \
