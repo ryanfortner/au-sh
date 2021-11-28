@@ -42,6 +42,8 @@ curl -s https://api.github.com/repos/VSCodium/VSCodium/releases/latest \
 
 rm $PKGDIR/codium-* || rm $PKGDIR/codium_*
 
+mv codium* $PKGDIR
+
 echo "Updating Goreleaser"
 LATEST=`curl -s https://api.github.com/repos/goreleaser/goreleaser/releases/latest | grep -oP '"tag_name": "\K(.*)(?=")'`
 curl -s https://api.github.com/repos/goreleaser/goreleaser/releases/latest \
@@ -57,6 +59,8 @@ curl -s https://api.github.com/repos/goreleaser/goreleaser/releases/latest \
   | xargs -n 1 curl -L -o goreleaser-$LATEST-arm64.deb || error "Failed to download goreleaser:arm64"
 
 rm $PKGDIR/goreleaser-* || rm $PKGDIR/goreleaser_*
+
+mv goreleaser* $PKGDIR
 
 echo "Updating hyperfine"
 LATEST=`curl -s https://api.github.com/repos/sharkdp/hyperfine/releases/latest | grep -oP '"tag_name": "\K(.*)(?=")'`
@@ -74,7 +78,19 @@ curl -s https://api.github.com/repos/sharkdp/hyperfine/releases/latest \
 
 rm $PKGDIR/hyperfine-* || rm $PKGDIR/hyperfine_*
 
-mv *.deb $PKGDIR
+mv hyperfine* $PKGDIR
+
+echo "Updating howdy"
+LATEST=`curl -s https://api.github.com/repos/boltgolt/howdy/releases/latest | grep -oP '"tag_name": "\K(.*)(?=")'`
+curl -s https://api.github.com/repos/boltgolt/howdy/releases/latest \
+  | grep browser_download_url \
+  | grep '.deb"' \
+  | cut -d '"' -f 4 \
+  | xargs -n 1 curl -L -o howdy-$LATEST-all.deb || error "Failed to download howdy:all!"
+
+rm $PKGDIR/howdy-* || rm $PKGDIR/hyperfine_*
+
+mv howdy* $PKGDIR
 
 cd $PKGDIRA
 echo "writing packages..."
