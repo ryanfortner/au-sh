@@ -88,9 +88,21 @@ curl -s https://api.github.com/repos/boltgolt/howdy/releases/latest \
   | cut -d '"' -f 4 \
   | xargs -n 1 curl -L -o howdy-$LATEST-all.deb || error "Failed to download howdy:all!"
 
-rm $PKGDIR/howdy-* || rm $PKGDIR/hyperfine_*
+rm $PKGDIR/howdy-* || rm $PKGDIR/howdy_*
 
 mv howdy* $PKGDIR
+
+echo "Updating pactsall"
+LATEST=`curl -s https://api.github.com/repos/pacstall/pacstall/releases/latest | grep -oP '"tag_name": "\K(.*)(?=")'`
+curl -s https://api.github.com/repos/pacstall/pacstall/releases/latest \
+  | grep browser_download_url \
+  | grep '.deb"' \
+  | cut -d '"' -f 4 \
+  | xargs -n 1 curl -L -o pacstall-$LATEST-all.deb || error "Failed to download pacstall:all!"
+
+rm $PKGDIR/pacstall-* || rm $PKGDIR/pacstall_*
+
+mv pacstall* $PKGDIR
 
 cd $PKGDIRA
 echo "writing packages..."
