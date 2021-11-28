@@ -122,6 +122,15 @@ rm $PKGDIR/croc-* || rm $PKGDIR/croc_*
 
 mv croc* $PKGDIR
 
+echo "Updating turbowarp-deskop"
+LATEST=`curl -s https://api.github.com/repos/TurboWarp/desktop/releases/latest | grep -oP '"tag_name": "\K(.*)(?=")' | tr -d 'v'`
+wget https://github.com/TurboWarp/desktop/releases/download/v${LATEST}/TurboWarp-linux-arm64-${LATEST}.deb -O turbowarp-desktop_${LATEST}_arm64.deb || error "Failed to download turbowarp-desktop:arm64!"
+wget https://github.com/TurboWarp/desktop/releases/download/v${LATEST}/TurboWarp-linux-armv7l-${LATEST}.deb -O turbowarp-desktop_${LATEST}_armhf.deb || error "Failed to download turbowarp-desktop:armhf!"
+
+rm $PKGDIR/turbowarp-desktop-* || rm $PKGDIR/turbowarp-desktop_*
+
+mv turbowarp* $PKGDIR
+
 cd $PKGDIRA
 echo "writing packages..."
 EMAIL="$(cat /root/email)"
