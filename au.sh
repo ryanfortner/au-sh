@@ -131,6 +131,24 @@ rm $PKGDIR/turbowarp-desktop-* || rm $PKGDIR/turbowarp-desktop_*
 
 mv turbowarp* $PKGDIR
 
+echo "Updating croc"
+LATEST=`curl -s https://api.github.com/repos/cdr/code-server/releases/latest | grep -oP '"tag_name": "\K(.*)(?=")'`
+curl -s https://api.github.com/repos/cdr/code-server/releases/latest \
+  | grep browser_download_url \
+  | grep 'armhf.deb"' \
+  | cut -d '"' -f 4 \
+  | xargs -n 1 curl -L -o code-server-$LATEST-armhf.deb || error "Failed to download code-server:armhf"
+
+curl -s https://api.github.com/repos/cdr/code-server/releases/latest \
+  | grep browser_download_url \
+  | grep 'arm64.deb"' \
+  | cut -d '"' -f 4 \
+  | xargs -n 1 curl -L -o code-server-$LATEST-arm64.deb || error "Failed to download code-server:arm64"
+
+rm $PKGDIR/code-server-* || rm $PKGDIR/code-server_*
+
+mv code-server* $PKGDIR
+
 cd $PKGDIRA
 echo "writing packages..."
 EMAIL="$(cat /root/email)"
