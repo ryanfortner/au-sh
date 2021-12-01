@@ -149,6 +149,24 @@ rm $PKGDIR/code-server-* || rm $PKGDIR/code-server_*
 
 mv code-server* $PKGDIR
 
+echo "Updating electron-fiddle"
+LATEST=`curl -s https://api.github.com/repos/electron/fiddle/releases/latest | grep -oP '"tag_name": "\K(.*)(?=")'`
+curl -s https://api.github.com/repos/electron/fiddle/releases/latest \
+  | grep browser_download_url \
+  | grep 'armhf.deb"' \
+  | cut -d '"' -f 4 \
+  | xargs -n 1 curl -L -o electron-fiddle-$LATEST-armhf.deb
+
+curl -s https://api.github.com/repos/electron/fiddle/releases/latest \
+  | grep browser_download_url \
+  | grep 'arm64.deb"' \
+  | cut -d '"' -f 4 \
+  | xargs -n 1 curl -L -o electron-fiddle-$LATEST-arm64.deb
+
+rm $PKGDIR/electron-fiddle-* || rm $PKGDIR/electron-fiddle_*
+
+mv electron-fiddle* $PKGDIR
+
 cd $PKGDIRA
 echo "writing packages..."
 EMAIL="$(cat /root/email)"
